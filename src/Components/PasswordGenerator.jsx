@@ -9,7 +9,11 @@ const PasswordGenerator = () => {
       <div className="password-wrapper">
         <div className="password-area">
           <div className="password">
-            <input type="text" disabled />
+            <input
+              type="text"
+              disabled
+              placeholder="Click on the Generate Password"
+            />
             <img src={copyIcon} alt="tableicon" className="copyIcon" />
           </div>
         </div>
@@ -41,6 +45,20 @@ const PasswordGenerator = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="password-lenght">
+        <h3>Password Lenght</h3>
+        <div className="slider">
+          <p className="rangeValue">10</p>
+          <div className="range">
+            <input type="range" min={10} max={40} />
+          </div>
+        </div>
+      </div>
+      <div className="buttons">
+        <button type="button">Copy Password</button>
+        <button type="button">Generate Password</button>
       </div>
     </div>
   );

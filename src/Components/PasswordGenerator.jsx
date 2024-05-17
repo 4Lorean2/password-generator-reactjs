@@ -1,5 +1,6 @@
 import React from "react";
 import "./PasswordGenerator.css";
+import copyIcon from "../assets/copy-icon.svg";
 
 const PasswordGenerator = () => {
   return (
@@ -9,6 +10,7 @@ const PasswordGenerator = () => {
         <div className="password-area">
           <div className="password">
             <input type="text" disabled />
+            <img src={copyIcon} alt="tableicon" className="copyIcon" />
           </div>
         </div>
       </div>

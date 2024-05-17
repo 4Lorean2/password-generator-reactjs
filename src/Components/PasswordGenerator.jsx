@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PasswordGenerator.css";
 import copyIcon from "../assets/copy-icon.svg";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,7 +14,29 @@ const PasswordGenerator = () => {
   const [upperCase, setUpperCase] = useState(false);
   const [numbers, setNumbers] = useState(true);
   const [symbols, setSymbols] = useState(false);
-  const [passwordLenght, setPasswordLenght] = useState(8);
+  const [passwordLength, setPasswordLength] = useState(8);
+  const [selectedChoices, setSelectedChoices] = useState([
+    "lowercase",
+    "uppercase",
+    "numbers",
+    "symbols",
+  ]);
+
+  useEffect(() => {
+    generatePassword();
+  }, [passwordLength]);
+
+  const handleCheckbox = (type) => {
+    let tempChoices = selectedChoices;
+    if (tempChoices.includes(type)) {
+      const index = tempChoices.indexOf(type);
+      tempChoices.splice(index, 1);
+    } else {
+      tempChoices.push(type);
+    }
+    console.log(tempChoices);
+    setSelectedChoices(tempChoices);
+  };
 
   const generatePassword = () => {
     let characterList = "";
@@ -36,7 +58,7 @@ const PasswordGenerator = () => {
     let tempPassword = "";
     const characterListLength = characterList.length;
 
-    for (let i = 0; i < passwordLenght; i++) {
+    for (let i = 0; i < passwordLength; i++) {
       const characterIndex = Math.round(Math.random() * characterListLength);
       tempPassword += characterList.charAt(characterIndex);
     }
@@ -45,10 +67,9 @@ const PasswordGenerator = () => {
 
   const copyPassword = async () => {
     const copiedText = await navigator.clipboard.readText();
-
-    if (copiedText) {
+    if (password.length && copiedText !== password) {
       navigator.clipboard.writeText(password);
-      toast.success("Password Copied to Clipboard!", {
+      toast.success("Password copied to clipboard", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -95,9 +116,16 @@ const PasswordGenerator = () => {
                     name="lower"
                     id="lower"
                     checked={lowerCase}
-                    onChange={() => setLowerCase(!lowerCase)}
+                    disabled={
+                      selectedChoices.length === 1 &&
+                      selectedChoices.includes("lowercase")
+                    }
+                    onChange={() => {
+                      setLowerCase(!lowerCase);
+                      handleCheckbox("lowercase");
+                    }}
                   />
-                  <label htmlFor="lower"> Include LowerCase(a-z) </label>
+                  <label htmlFor="lower">Include LowerCase(a-z)</label>
                 </div>
                 <div className="checkbox-field">
                   <input
@@ -105,9 +133,16 @@ const PasswordGenerator = () => {
                     name="upper"
                     id="upper"
                     checked={upperCase}
-                    onChange={() => setUpperCase(!upperCase)}
+                    disabled={
+                      selectedChoices.length === 1 &&
+                      selectedChoices.includes("uppercase")
+                    }
+                    onChange={() => {
+                      setUpperCase(!upperCase);
+                      handleCheckbox("uppercase");
+                    }}
                   />
-                  <label htmlFor="upper"> Include UpperCase(A-Z) </label>
+                  <label htmlFor="upper">Include UpperCase(A-Z)</label>
                 </div>
               </div>
               <div className="right">
@@ -117,9 +152,16 @@ const PasswordGenerator = () => {
                     name="numbers"
                     id="numbers"
                     checked={numbers}
-                    onChange={() => setNumbers(!numbers)}
+                    disabled={
+                      selectedChoices.length === 1 &&
+                      selectedChoices.includes("numbers")
+                    }
+                    onChange={() => {
+                      setNumbers(!numbers);
+                      handleCheckbox("numbers");
+                    }}
                   />
-                  <label htmlFor="numbers"> Include Numbers(1-9) </label>
+                  <label htmlFor="numbers">Include Numbers(0-9)</label>
                 </div>
                 <div className="checkbox-field">
                   <input
@@ -127,9 +169,16 @@ const PasswordGenerator = () => {
                     name="symbols"
                     id="symbols"
                     checked={symbols}
-                    onChange={() => setSymbols(!symbols)}
+                    disabled={
+                      selectedChoices.length === 1 &&
+                      selectedChoices.includes("symbols")
+                    }
+                    onChange={() => {
+                      setSymbols(!symbols);
+                      handleCheckbox("symbols");
+                    }}
                   />
-                  <label htmlFor="symbols"> Include Symbols(&-#) </label>
+                  <label htmlFor="symbols">Include Symbols(&-#)</label>
                 </div>
               </div>
             </div>
@@ -139,15 +188,15 @@ const PasswordGenerator = () => {
         <div className="password-lenght">
           <h3>Password Lenght</h3>
           <div className="slider">
-            <p className="rangeValue">{passwordLenght}</p>
+            <p className="rangeValue">{passwordLength}</p>
             <div className="range">
               <input
                 type="range"
                 min={8}
                 max={42}
-                defaultValue={passwordLenght}
+                defaultValue={passwordLength}
                 onChange={(event) =>
-                  setPasswordLenght(event.currentTarget.value)
+                  setPasswordLength(event.currentTarget.value)
                 }
               />
             </div>

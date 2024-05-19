@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import "./PasswordGenerator.css";
 import copyIcon from "../assets/copy-icon.svg";
 import { ToastContainer, toast } from "react-toastify";
+// import { reducer } from "./reducer";
+// import { initialState } from "./reducer";
 
 const lowercaseList = "abcdefghijklmnopqrstuvwxyz";
 const uppercaseList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -22,19 +24,19 @@ const PasswordGenerator = () => {
     "symbols",
   ]);
 
+  // const [state, dispatch] = useReducer(reducer, initialState)
+
   useEffect(() => {
     generatePassword();
-  }, [passwordLength]);
+  }, [passwordLength, lowerCase, upperCase, numbers, symbols]);
 
   const handleCheckbox = (type) => {
-    let tempChoices = selectedChoices;
+    let tempChoices = [...selectedChoices];
     if (tempChoices.includes(type)) {
-      const index = tempChoices.indexOf(type);
-      tempChoices.splice(index, 1);
+      tempChoices = tempChoices.filter((choice) => choice !== type);
     } else {
       tempChoices.push(type);
     }
-    console.log(tempChoices);
     setSelectedChoices(tempChoices);
   };
 
@@ -59,7 +61,7 @@ const PasswordGenerator = () => {
     const characterListLength = characterList.length;
 
     for (let i = 0; i < passwordLength; i++) {
-      const characterIndex = Math.round(Math.random() * characterListLength);
+      const characterIndex = Math.floor(Math.random() * characterListLength);
       tempPassword += characterList.charAt(characterIndex);
     }
     setPassword(tempPassword);
@@ -194,9 +196,9 @@ const PasswordGenerator = () => {
                 type="range"
                 min={8}
                 max={42}
-                defaultValue={passwordLength}
+                value={passwordLength}
                 onChange={(event) =>
-                  setPasswordLength(event.currentTarget.value)
+                  setPasswordLength(Number(event.currentTarget.value))
                 }
               />
             </div>
